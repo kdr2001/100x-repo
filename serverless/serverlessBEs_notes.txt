@@ -1,0 +1,111 @@
+https://projects.100xdevs.com/tracks/eooSv7lnuwBO6wl9YA5w/serverless-1
+
+Look at cloudflares-workers.examples on internet. They have some very good examples.
+There are tutorials also, explore a bit.
+---------------------------------------------------------------------------
+Cloud providers:
+
+Companies provide servers for us to deploy our applications.
+They have big data centers, where we can rent a bit of server space.
+---------------------------------------------------------------------------
+Cold start problem:
+They won't run your application on server, unless any one is using it. So, if no one visits 
+your website for 2 hours, your server is not up. Then, when a new request comes, AWS will first
+start the server, then, runs the request, which will take quite a few miccro seconds. This is the cold 
+start problem.
+To eliminate this, we can do few things like, keep bringing up the server, every 5 seconds. 
+or, maybe have atleast 1 server up all the time.
+Warm pool - have atleast 1 server up all the time. 
+----------------------------------------------------------------------------
+Using cloudflare to deploy:
+
+Workers: They let us write some backend or frontend code. They will maintain serverlessly.
+-----------------------------------------------------------------------------
+Process:
+Steps to deploy a worker on cloudflare:
+
+Step 1: sign up in cloudflare
+Step 2: go to get your workers and clients
+step 3: deploy a worker
+step 4: open the link in there
+-----------------------------------------------------------------------------
+What is a runtime? for cloudflare?
+
+There is a V8 engine on browser, to run javascript code. Some smart people took out this engine, add some more
+features, to run code without browser, for backend, which is node.js. 
+Now, when we deploy on server, with node.js runtime, it is not easy to scale, to start new node 
+process for every application. We don't know, how optimal it is.
+That is why, the cloudflare people created their own runtime, so that they won't be depending much on the node.js
+factors. They used v8 for this. They will start one single node.js application.And they will create small many workers on it.
+-----------------------------------------------------------------------------
+Deploy the project in local:
+
+Step 1: run 'npm create cloudflare -- my-app' in your cmd. 'my-app' is the folder name.
+Step 2: select 'hello-world' worker
+Step 3: select 'typescript'
+-Don't deploy application yet, cause your cloudflare account is not yet mapped to your local to deploy.
+Step 4: 'npm run dev' 
+-wragler no
+-The application gets deployed on your localhost.
+-----------------------------------------------------------------------------
+Deploy the project on internet:
+
+Workers : worker is your application that is going onto cloudflare, and run on its worker runtime. 
+Wrangler - is the cli to do tonne of things on cloudflare. One of them is to push your worker to cloudflare.
+Step 1: 'npx wrangler login'
+-you will get a link in your cmd to authenticate by yourself
+Step 2: 'npx wrangler whoami'
+-it will give the permissions we have
+Step 3: 'npm run deploy'
+-will deploy the worker onto cloudflare, and gives me a link to access the worker on the internet.
+
+-open cloudflare overview page, you can see the deployed workers.
+-We can also see the no.of requests sent, logs etc.
+-----------------------------------------------------------------------------
+What is the return type : Promise<Response>
+
+It is an async function, so it will return a promise. 
+------------------------------------------------------------------------------
+Why can't we route to urls or change methods like post, get in cloudflare easily using express?
+Because, express heavily relies on node.js runtime. But, cloudflare has it's own run time. So, cloudflare
+doesn't support express.
+We need to check routes and methods in export default function only. 
+So, it's better to write separatable code for express routes and logic, so that, when the project is moved to 
+cloudflare, we will remove the express routes, and add cloudflare code.
+------------------------------------------------------------------------------
+HONO:
+
+We use Hono.dev for routing on cloudflare.
+
+Create a project using Hono:
+Step-1:npm create hono@latest my-app
+Step-2: select cloudflare workers
+Step-3:npm i
+-There will be only one variable from server i.e., c. 'c' is context here. We can get request and response objects using c.req and c.res
+Step -4: create a postman request 
+Step-5: npm run dev
+-to run on localhost
+Step-6: npm run deploy
+-to deploy on cloudflare
+------------------------------------------------------------------------------
+Middlewares in Cloudflare:
+
+async function authMiddleware(c:any, next:any) {
+  if(c.req.header("Authorization")){
+    await next()
+  }else{
+    return c.text("You don't have access");
+  }
+}
+
+app.get('/', authMiddleware, async (c) => {
+  // const body = await c.req.json();
+  // console.log(body); //get request body
+  // console.log(c.req.header("Authorization")); //get request headers authorization
+  // console.log(c.req.query("param")); //get request query parameters
+
+  return c.text('Hello Hono!')
+})
+------------------------------------------------------------------------------
+Connecting to DB:
+

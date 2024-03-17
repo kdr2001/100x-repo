@@ -1,0 +1,143 @@
+https://projects.100xdevs.com/tracks/g0AcDSPl74nk45ZZjRdU/aws-1
+
+"Vulter" is the best cloud service, if you want to get easily and for free.
+------------------------------------------------------------------------------------------
+Step 1: Get an aws account.
+Step 2: Launch one ec2 instance.
+Step 3: give name 
+Step 4: select 'ubuntu' OS
+Step 5: select instance type 't2 micro'
+Step 6: create 'key pair' - give a name to 'key' - this will give you a .pem file
+key-pair lets you login to that server. The pem file downloaded is enough to connect to the server.
+Step 7: In network settings, select SSH,HTTPS,HTTP.
+Step 8: select the gb needed
+Step 9: launch instance
+You will get one link, which is your ec2 instance. 'stop' your instance, when it is not in use.
+Step 10: Run the instance, you get.
+You will get an ip, use that to connect to your ec2 instance.
+Step 11: Select your instance, click on 'security'. change the inbound rules to allow your own port nos.
+Step 12: copy the SSH certificate to the folder of your choice. (mostly where client is there)
+Step 13: Run command : 'ssh -i <certificate file-name> ubuntu@<ip of your instance>'
+ip:13.49.80.213  certificatefileName: deekshitha-key.pem
+Step 14: click 'yes'
+Run this in client's cmd in the respective folder, where certificate is present.
+This command won't work. It will give an error saying key is not known by any other names.
+Run command: 'chmod 700 <ssh file-name>' (if the above won't work)
+Step 15: clone the repository in your 'ubuntu' system
+'https://github.com/hkirat/sum-server'
+[Step 16: install node on ubuntu machine
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash
+[this is the digitalocean node installation link using script (2nd link)]
+Step 17: run the last 3 commands in the desc of the above command 
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+something like this
+Step 18: run "nvm"
+Step 19: nvm install <version of node> 
+-this will install node
+Step 20: npm 
+-to check whether node is installed or not
+]
+Step 21: cd sum-server
+Step 22: npm install
+Step 23: node index.js
+-This means it has something running on port 8080
+-But, we only enabled few ports in our security groups
+-1st way:
+check whether your project is listening on 8080
+run 'cat index.js'
+If it is running on 8080 port, please go to ec2 machine
+click on security
+click on 'edit inbound rules'
+add new port 8080
+access the ip:port (or) domain-name:port
+Domain name can be seen in your instance
+http://13.49.80.213:8080/todos - use this link
+
+[yayy: we successfully deployed an application on AWS]
+
+Step 24: 
+------------------------------------------------------------------------------------------
+to stop the running node.js project in aws server.
+
+ps aux | grep node  # Find the PID of the Node.js process
+kill <PID>          # Terminate the Node.js process
+
+------------------------------------------------------------------------------------------
+chmod 700:
+-This command is for file permissions
+------------------------------------------------------------------------------------------
+Compute: getting some hardware, storage, RAM and computational capacity(cpu).
+Elastic compute: you can increase or decrease the compute. 
+EC2: version 2 of elastic compute.
+
+key pair: key pair will create a public and a private key.
+Our request or password is encrypted with public key and decrypted with only this private key.
+
+AWS server has a public IP. So, anyone can access it.
+
+SSH(Secure Shell Host): 
+A protocol to run in client to connect to AWS machine. SSH port by default is 22.
+------------------------------------------------------------------------------------------
+Node needs port 8080 to run 
+------------------------------------------------------------------------------------------
+Reverse proxies:
+
+let's take 2 projects on AWS machine. one is running on 8080 port. But, the url is ugly ec2....:8080. 
+Let's make 8080 port as default or we deploy it on 80, so that we don't need to add ugly port in the 
+link. Let's say you deployed 2nd project also. Now, when you click on the link, which project gets accessed.
+You cannot have 2 conflicting projects on a single port. So, it makes sense to use 'reverse proxies'.
+
+If the projects are running on 8080 and 8081 respectively. We will run reverse proxy on 80. If the incoming 
+url is backend1.domain-name.com send it to 8080, and if it is backend2.domain-name.com send it to 8081.
+
+------------------------------------------------------------------------------------------
+nginx:
+
+It is an open-source software for many things. But, we are using for reverse proxy, which is one of the
+features provided by it.  
+
+Installation of nginx:
+step 1: sudo apt update
+step 2: sudo apt install nginx
+installing nginx will automatically start it, also.
+
+We didn't tell anything to nginx yet. So, it will run some default nginx page on port 80.
+We need to point urls in nginx to its subdomains. 
+
+Step 1: copy the ip of the ec2 machine
+Step 2: go to your domain provider[The place where you bought your domain from]
+Step 3: point both the projects urls to the same ip[domain is same, subdomain is different]
+Step 4: create reverse proxy
+run sudo vi /etc/nginx/nginx.conf
+This is the file that is running defaultly. By default it is serving an html file.
+Step 5: copy paste the code in notion into this file
+This basically has which url should be diverted to which port.
+Step 6: we can also do the same by deleting the original file, reopening the same file, and copy pasting the above thing.
+Step 7: restart nginx
+[sudo nginx -s reload]
+
+------------------------------------------------------------------------------------------
+how to do it in our aws, as we don't have domain name.
+[fool]
+
+point different ip to a specific domain name
+
+how to do that:
+Step 1: in your local, run sudo vi /etc/hosts
+Step 2: add your wanted ip, and domain url here
+Step 3: Then hit the url
+
+u can find the same file in windows in this location 
+C:\Windows\System32\drivers\etc\hosts
+
+If you get a bad gateway error 502, that means your node.js project is not running
+------------------------------------------------------------------------------------------
+U can get the terminal for your VM/EC2 instance in AWS page also. When you click on instance,
+on the top right you can see this connect button.
+------------------------------------------------------------------------------------------
+Need to teach:
+
+1)certificate management
+------------------------------------------------------------------------------------------

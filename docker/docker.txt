@@ -1,0 +1,16 @@
+https://quickest-juniper-f9c.notion.site/Week-12-3-1749ad9048f744b990272caec9818955 
+https://projects.100xdevs.com/tracks/docker-easy/docker-6 
+----------------------------------------------------------------------------------------------------
+Why Docker?
+1)	Makes it easy to setup projects locally. 
+2)	Dockerize your own app.
+3)	Learning to deploy via Docker.
+-------------------------------------------------------------------------------------------------------
+Containers:
+Container is a mini computer running inside our computer. It has it’s own file system, network etc. 
+If an express application is running on docker, it is listening on 3000 port, then your container sends the request to 3000 port. But, your computer is not listening on 3000. Container has it’s own set of ports. So, you can listen on them independently. 
+If you want mongodb, don’t go with the conventional process of installing, running on some port. In docker, you just run a command and it will be running on your containers.
+Image in execution is called a ‘container’.
+--------------------------------------------------------------------------------------------------------
+
+

@@ -1,0 +1,140 @@
+https://projects.100xdevs.com/tracks/w5E6PT2t0IyOFM3bZxcM/aws-fe-1
+
+---------------------------------------------------------------------------------------------
+For frontends, we can use Vercel to deploy, but vercel gets very expensive at scale.
+
+---------------------------------------------------------------------------------------------
+Distribution:
+
+Whenever you have a website, it is distributing content (like youtube distributing mp4 files).
+it should give .js files, or .html files etc.
+
+For Distribution, you have CDNs. (Content Delivery Networks)
+---------------------------------------------------------------------------------------------
+Content Delivery Networks:
+
+If the project is deployed in a server in USA. If people in India are accessing it, then, 
+1person -> you can get from deployed server, better
+many people -> you send the project to servers in India, it will store it in cache, and send it 
+to the users in India.
+
+The servers in India are Content Delivery Networks.
+
+As people ask, don't distribute it using your S3 url. Distribute it using your CDN url. Tell 
+the CDN what the source is, that means, your S3 url.
+
+If you ask for cdn.a.mp4.com , CDN has this s3.com with it. It will search for 'a'. 
+caches it and gives it to u.
+
+'CloudFront' is a CDN. 
+
+Servers in CDN are called as 'POPs'-> Point of Presence.
+
+Whenever you have 'object stores', you will have CDNs.
+CDNs cost more than object stores. 
+Whenever, you are buying CDNs , choose the cheapest CDNs.
+CDNs can only be working for Frontends.
+It won't work for backends, because, data is user specific.
+Edge Networks are used for backends.
+---------------------------------------------------------------------------------------------
+Storage:
+
+objects = something greater than 500GB and less than an MB possibly, it can be mp4 files, or
+images or .js files etc. These objects cannot be stored in conventional databases. So, every 
+cloud provider provides something called 'object stores', which is used to store these objects.
+AWS has an object store called 'S3' [Simple Storage Service]. 
+
+How to store:
+It will give you a dashboard, upload your file there, it will give you a link. use the link.
+It is very similar to Google drive. If we give them the url directly, it is not a good practice. 
+
+Storage is easy, but distribution is hard.
+ 
+---------------------------------------------------------------------------------------------
+Deploy frontends on the internet:
+
+step 1: create aws account
+step 2: Go to 'Amazon S3'
+step 3: Build your react frontends
+-'npm run dev' should be used for development purpose. 
+-This is not the way you should deploy your application.
+-In the end, you will get some html/css/js files from your react project. Those are the things that need to be deployed.
+-'npm run build' will build the project
+-if you click on built 'index.html' file, it won't work
+-Because, your browser cannot access your files. Slightly easier way, is to distribute this files properly.
+-We use serve module for the same
+-'npm install -g serve' 
+-'cd dist'
+- 'serve
+step 4: create a new bucket in aws
+step 5: give 'bucket-name'
+step 6: block all the access
+step 7: create the bucket
+step 8: open your bucket
+step 9: drag and drop your files there
+step 10:upload
+step 11: create a cloudfront distribution
+step 12: open 'cloudfront' in aws
+step 13: create a distribution
+step 14: give your s3 bucket address name in 'origin domain'
+step 15: original path - is the path given to root of your accessible objects
+here, it's empty
+step 16: click on origin access control settings
+step 17: create new 'oac', if not there
+select 'sign requests'>create
+we need to open up our s3 just to this cloudfront.so, we need to create oac
+For s3 also, we need to say that only requests from this cloudfront are taken
+for that, cloudfront gives some file at the end. we need to add that in S3.
+step 18: default-root-object : index.html
+This is like added to the url you provided
+step 19: create distribution
+step 20: click on the link of s3 bucket policy
+step 21: bucket policy - edit
+step 22: copy policy from where you clicked on the s3 bucket policy and paste it here.
+-now s3 is still blocked from all across, but only accessible from this cloudfront, that you created
+step 23: save changes
+step 24: you will see last modified : deploying in cloud front page
+step 25: wait until u see the timestamp there
+step 26: If you copy the url there, and look at it in your browser, then you can see your index.html running.
+-connecting your own domain to the url is hard
+step 27: In the cloudfront page, click on edit in settings, where you can see alternate domain names
+step 28: add your 'alternate domain-name'
+step 29: you will need to show the ownership of the url, by adding ssl certificate there
+-Amazon can also give you one. 
+step 30: [get certificate from AWS Certificate Manager (ACM)
+1: give domain name that you need certificate for
+2: validation method: dns
+3: key algorithm: rsa
+4: click on request
+5: you will see 'pending validation'
+6: we should verify that we own this domain
+7: go to place where you bought your domain (like google domain)
+8: go to 'dns'
+9: click on 'manage custom records'
+10: add new record, what amazon tells you[CNAME]-sub domain. it will give in that request page
+11: type: CNAME
+12: add CNAME value in the ip place
+13: save
+-After you save this record, aws will hit this url, and verify whether it belongs to you or not.
+-it will generate a certificate for you then
+-In ACM, you will find pending validation changed to issued
+]
+step 31: save changes
+-we did verification but we didn't point our domain url to the cloudfront url
+step 32: add it in the google domains
+step 33: wait for some time for dns to get propagated
+step 34: if you add /route or /dashboard, whatever, to ur url. it won't work. it will give error page.
+in the end, cloudfront should take the url, give the index.html file and then your project needs to
+figure out the route.
+We need to add an error page that routes to index.html
+step 35: In cloudfront page, you can see 'error pages'
+step 36: create custom error response
+step 37: customise error response : yes
+response page path: index.html
+click on 'create custom error response'
+step 38: Responses will get cached.
+To clear the cache, In cloudfront page, go to invalidations
+add object paths: /*
+create invalidation
+---------------------------------------------------------------------------------------------
+[yayy!! successfully deployed a front end application on aws in s3, using cloudfront as CDN.
