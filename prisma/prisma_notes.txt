@@ -74,6 +74,13 @@ then removes it.
  npx prisma generate
  -PrismaClient is not the one, that is already there on npm registry
  -It is client created based on your prisma.schema file, to access the db tables.
+
+ -how to import prisma client
+ 1)import {PrismaClient} from '@prisma/client'
+ 2)const prisma = new PrismaClient();
+ 3)prisma.user.findMany({
+    id:1;
+   })
  ------------------------------------------------------------------------
  
  
